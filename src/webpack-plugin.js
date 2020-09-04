@@ -13,7 +13,7 @@ function loader(options) {
     return `
 ${ !!embedSystemJs && 'require("systemjs/dist/system");'}
 ${ !!embedSystemJs && !!extras && extras.length >0 && extras.map( extraName => `require("systemjs/dist/extras/${extraName}");`).join("\n")}
-require("${__package_name__}");
+require("__package_name__");
 
 var imports = {
 ${packageMaps.join(",\n")}
