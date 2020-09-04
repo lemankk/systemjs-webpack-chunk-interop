@@ -1,8 +1,8 @@
-import InjectPlugin from 'webpack-inject-plugin';
+const {default: InjectPlugin} = require('webpack-inject-plugin');
 
 function loader(options) {
   return () => {
-    const { shared = [], systemJsInstanceName = "System", embedSystemJs = true, extras = ['amd','named-exports','transform'] } = options;
+    const { shared = [], systemJsInstanceName = "window.System", embedSystemJs = true, extras = ['amd','named-exports','transform'] } = options;
 
     // Creating 
     // Remark: arrow function is not supported in IE
@@ -10,7 +10,7 @@ function loader(options) {
       return `"${packageName}": function() {return import("${packageName}");}`;
     })
     
-    return `     
+    return `
 ${ !!embedSystemJs && 'require("systemjs/dist/system");'}
 ${ !!embedSystemJs && !!extras && extras.length >0 && extras.map( extraName => `require("systemjs/dist/extras/${extraName}");`).join("\n")}
 require("${__package_name__}");
@@ -20,11 +20,11 @@ ${packageMaps.join(",\n")}
 };
 
 ${systemJsInstanceName}.appendImportMap(imports);
-    `;
+`;
   };
 }
  
-export default class SystemJsWebpackChunkInteropPlugin {
+module.exports = class SystemJsWebpackChunkInteropPlugin {
   constructor(options) {
     this.options = options;
   }
