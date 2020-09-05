@@ -20,7 +20,8 @@
 
     const packageMap = {};
     for (const name of packageNames) {
-      packageMap[name] = getUrl(name);
+      // Use it directly if the package already provide an url, other assume that is a internal url with import syntax
+      packageMap[name] = typeof packageNames[name] === "string" ? packageNames[name] : getUrl(name);
     }
 
     sjsMapElm.innerText = JSON.stringify({
@@ -35,7 +36,11 @@
 
     // use original loader
     if (url.indexOf(asyncImportPrefix) !== 0) {
-      return existingHook.apply(loader, arguments);
+      if (/^https?:/.test(url)) {
+        return import(/* webpackIgnore: true */ url);
+      } else {
+        return existingHook.apply(loader, arguments);
+      }
     }
     var packageName = url.substr(asyncImportPrefix.length);
     return new Promise(async (resolve, reject) => {
