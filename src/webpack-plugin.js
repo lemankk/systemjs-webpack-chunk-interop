@@ -1,4 +1,4 @@
-const {default: InjectPlugin} = require('webpack-inject-plugin');
+const {default: InjectPlugin, ENTRY_ORDER} = require('webpack-inject-plugin');
 
 function loader(options) {
   return () => {
@@ -30,6 +30,8 @@ module.exports = class SystemJsWebpackChunkInteropPlugin {
   }
  
   apply(compiler) {
-    new InjectPlugin(loader(this.options)).apply(compiler);
+    new InjectPlugin(loader(this.options), {
+      entryOrder: ENTRY_ORDER.First
+    }).apply(compiler);
   }
 }
